@@ -16,11 +16,5 @@ namespace webapi.Controllers
             var categories = await _categoriesService.Get();
             return categories;
         }
-
-        // [HttpGet]
-        // public IActionResult Seed()
-        // {
-        //     return  Ok();
-        // }
     }
 }

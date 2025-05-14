@@ -4,9 +4,7 @@ using webapi.Services;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 {
     // Add services to the container.
-    // string connStr = "Data Source=hello.db";
-
-    var DB_CONNECTION_STRING = builder.Configuration.GetValue<string>("DB_CONNECTION_STRING");
+    var DB_CONNECTION_STRING = builder.Configuration["DB_CONNECTION_STRING"];
     builder.Services.AddSingleton(_ => new SeedService(DB_CONNECTION_STRING));
     builder.Services.AddSingleton(_ => new CategoriesService(DB_CONNECTION_STRING));
     builder.Services.AddControllers();
