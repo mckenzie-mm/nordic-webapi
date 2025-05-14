@@ -1,0 +1,27 @@
+[
+    {
+        "id": 0,
+        "name": "Bracelets",
+        "slug": "bracelets"
+    },
+    {
+        "id": 1,
+        "name": "Earrings",
+        "slug": "earrings"
+    },
+    {
+        "id": 2,
+        "name": "Brooches",
+        "slug": "brooches"
+    },
+    {
+        "id": 3,
+        "name": "Necklaces",
+        "slug": "necklaces"
+    },
+    {
+        "id": 4,
+        "name": "Rings",
+        "slug": "rings"
+    }
+]
