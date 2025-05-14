@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using webapi.DTO;
 using webapi.Models;
 using webapi.Services;
 
@@ -18,7 +19,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("{slug}")]
-        public async Task<IEnumerable<Product>> Get(string slug)
+        public async Task<Product> Get(string slug)
         {
             var product = await _productsService.GetProduct(slug);
             return product;
@@ -43,6 +44,13 @@ namespace webapi.Controllers
         {
             var products = await _productsService.GetSimilar(category, id);
             return products;
+        }
+
+        [HttpGet("getProductPage/{slug}")]
+        public async Task<ProductPageDTO> GetProductPage(string slug)
+        {
+            var productDTO = await _productsService.GetProductPage(slug);
+            return productDTO;
         }
     }
 }

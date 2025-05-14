@@ -1,6 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using webapi.DTO;
 using webapi.Models;
 
 namespace webapi.Services;
@@ -13,16 +15,27 @@ public class ProductsService
         _connectionString = connection;
     }
 
-    public void Create(Product category)
+    public void Create(Product product)
     {
         // store the product in the database
         
     }
 
-    public Product Get(int categoryId)
+    public async Task<Product> Get(int id)
     {
-        // pull the product from the database
-        return null;;
+        var sql = "SELECT * FROM products WHERE id=@id";
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var res = await connection.QuerySingleAsync<Product>(sql, new { id });
+            return res;
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
     }
 
     public async Task<IEnumerable<Product>> Get() {
@@ -43,21 +56,21 @@ public class ProductsService
         }
     }
 
-    public async Task<IEnumerable<Product>> GetProduct(string slug) {
+    public async Task<Product> GetProduct(string slug) {
         var sql = "SELECT * FROM products WHERE slug=@slug";
         try
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
-            var res = await connection.QueryAsync<Product>(sql, new { slug });
+            var res = await connection.QuerySingleAsync<Product>(sql, new { slug });
             return res;
 
         }
         catch (SqliteException ex)
         {
             Console.WriteLine(ex.Message);
-            return [];
+            return null;
         }
     }
 
@@ -123,16 +136,11 @@ public class ProductsService
             return [];
         }
     }
+
+    public async Task<ProductPageDTO> GetProductPage(string slug)
+    {
+       Product product = await GetProduct(slug);
+       List<Product> similar = (List<Product>) await GetSimilar(product.category, product.id);
+       return new ProductPageDTO { product = product, similar = similar };
+    }
 }
-
-
-/*
-    async findName(name: string) {
-            const sql = `SELECT DISTINCT name
-                        FROM products
-                        WHERE UPPER(name) LIKE UPPER('%${name}%')`;
-            const db = await openDb();
-            const res = await db.all(sql);
-            return res;
-        }
-*/
