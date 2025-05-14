@@ -23,38 +23,49 @@ public class SeedService
         {
             File.Delete(fileName);
         }
-        await CreateTables();
-        await SeedCategories();  
-    }
-
-    private async Task CreateTables() 
-    {
-        var sql = @"
+        await CreateTable(@"
                     CREATE TABLE categories (
                         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        name TEXT NOT NULL
+                    );");
+        Console.WriteLine("Categories table created");
+
+        await CreateTable(@"
+                    CREATE TABLE products (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
-                        slug TEXT NOT NULL
-                    );";
+                        price INTEGER NOT NULL,
+                        smallImage TEXT,
+                        mediumImage TEXT,
+                        largeImage TEXT,
+                        slug TEXT NOT NULL,
+                        description TEXT,
+                        availability INTEGER NOT NULL,
+                        category  TEXT NOT NULL
+                    );");
+
+        Console.WriteLine("Products table created");
+        await SeedCategories();  
+        await SeedProducts();  
+    }
+
+    private async Task CreateTable(string sql) 
+    {
         try
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
-            
             using var command = new SqliteCommand(sql, connection);
             await command.ExecuteNonQueryAsync();
-
-            Console.WriteLine("Table 'categories' created successfully.");
-
         }
         catch (SqliteException ex)
         {
             Console.WriteLine(ex.Message);
         }
     }
-
     private async Task SeedCategories() 
     {
-        var sql = "INSERT INTO categories (id, name, slug) VALUES (@id, @name, @slug)";
+        var sql = "INSERT INTO categories (id, name) VALUES (@id, @name)";
         try
         {
             var incoming = new List<Category>();
@@ -62,6 +73,51 @@ public class SeedService
             {
                 string json = r.ReadToEnd();
                 incoming = JsonSerializer.Deserialize<List<Category>>(json);
+            }
+
+            if (incoming != null && incoming.Count > 0) {
+                using var connection = new SqliteConnection(_connectionString);
+                connection.Open();
+                await connection.ExecuteAsync(sql, incoming);
+            }
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task SeedProducts() 
+    {
+        var sql = @"INSERT INTO products 
+                (id,
+                name,
+                price,
+                smallImage,
+                mediumImage,
+                largeImage,
+                slug,
+                description,
+                availability,
+                category) 
+            VALUES
+                (@id,
+                @name,
+                @price,
+                @smallImage,
+                @mediumImage,
+                @largeImage,
+                @slug,
+                @description,
+                @availability,
+                @category)";
+        try
+        {
+            var incoming = new List<Product>();
+            using (StreamReader r = new StreamReader("products.json"))
+            {
+                string json = r.ReadToEnd();
+                incoming = JsonSerializer.Deserialize<List<Product>>(json);
             }
 
             if (incoming != null && incoming.Count > 0) {
