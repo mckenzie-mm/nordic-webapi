@@ -51,8 +51,8 @@ namespace webapi.Controllers
         [HttpGet("getProductPage/{slug}")]
         public async Task<ProductPageDTO> GetProductPage(string slug)
         {
-            var productDTO = await _productsService.GetProductPage(slug);
-            return productDTO;
+            var ProductPageDTO = await _productsService.GetProductPage(slug);
+            return ProductPageDTO;
         }
     }
 }
