@@ -5,7 +5,7 @@ namespace webapi.DTO;
 
 public class ProductPageDTO
 {
-    public required Product product { get; init; }
-    public required List<Product> similar { get; init; }
+    public required ProductDTO productDTO { get; init; }
+    public required List<ProductDTO> productsDTO { get; init; }
 
 }

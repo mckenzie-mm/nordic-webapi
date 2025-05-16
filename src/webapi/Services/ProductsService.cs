@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using webapi.DTO;
+using webapi.DTO_mappings;
 using webapi.Models;
 
 namespace webapi.Services;
@@ -141,6 +142,10 @@ public class ProductsService
     {
        Product product = await GetProduct(slug);
        List<Product> similar = (List<Product>) await GetSimilar(product.category, product.id);
-       return new ProductPageDTO { product = product, similar = similar };
+       return new ProductPageDTO
+       {
+           productDTO = Mapping.toProductDTO(product),
+           productsDTO = Mapping.toProductsDTO(similar)
+       };
     }
 }

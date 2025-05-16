@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using webapi.DTO;
+using webapi.DTO_mappings;
 using webapi.Models;
 using webapi.Services;
 
@@ -26,17 +27,18 @@ namespace webapi.Controllers
         }
 
         [HttpGet("findAll/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<IEnumerable<Product>> FindAll(int currentPage, int ITEMS_PER_PAGE)
+        public async Task<IEnumerable<ProductDTO>> FindAll(int currentPage, int ITEMS_PER_PAGE)
         {
-            var products = await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
-            return products;
+            var products = (List<Product>) await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
+
+            return Mapping.toProductsDTO(products);
         }
 
         [HttpGet("findByCategory/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<IEnumerable<Product>> FindByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
+        public async Task<IEnumerable<ProductDTO>> FindByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
-            var products = await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
-            return products;
+            var products = (List<Product>) await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
+            return Mapping.toProductsDTO(products);
         }
 
         [HttpGet("getSimilar/{category}/{id:int}")]
@@ -54,19 +56,3 @@ namespace webapi.Controllers
         }
     }
 }
-
-/*
-
-export async function getProductPageData(slug : string) {
-    const categories = await getCategories();
-    const product = await productsService.getProductBySlug(slug);
-    const category = await categoriesService.getById(product.categoryId);
-    const products = await productsService.getSimilar(category.id, product.id);
-
-    return { 
-        productDTO: fromProductDomain(product, categories),
-        productsDTO: fromProductsDomain(products, categories),
-        categoryDTO: fromCategoryDomain(category)
-    }
-}
-*/
