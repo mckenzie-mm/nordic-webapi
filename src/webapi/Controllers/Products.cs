@@ -29,7 +29,7 @@ namespace webapi.Controllers
         [HttpGet("findAll/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
         public async Task<IEnumerable<ProductDTO>> FindAll(int currentPage, int ITEMS_PER_PAGE)
         {
-            var products = (List<Product>) await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
+            var products = (List<Product>)await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
 
             return Mapping.toProductsDTO(products);
         }
@@ -37,7 +37,7 @@ namespace webapi.Controllers
         [HttpGet("findByCategory/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
         public async Task<IEnumerable<ProductDTO>> FindByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
-            var products = (List<Product>) await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
+            var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
             return Mapping.toProductsDTO(products);
         }
 
@@ -53,6 +53,13 @@ namespace webapi.Controllers
         {
             var ProductPageDTO = await _productsService.GetProductPage(slug);
             return ProductPageDTO;
+        }
+        
+        [HttpGet("getCount")]
+        public async Task<int> GetCount()
+        {
+            var count = await _productsService.GetCount();
+            return count;
         }
     }
 }

@@ -148,4 +148,25 @@ public class ProductsService
            productsDTO = Mapping.toProductsDTO(similar)
        };
     }
+
+    public async Task<int> GetCount()
+    {
+        var sql = "SELECT COUNT(*) FROM products";
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            using var command = new SqliteCommand(sql, connection);
+            int count = (int)(Int64) await command.ExecuteScalarAsync();
+            Console.WriteLine($"The number of products is {count}");
+            return count;
+
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return -1;
+        }
+    }
 }
+
