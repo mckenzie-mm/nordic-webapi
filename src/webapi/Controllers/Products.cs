@@ -66,56 +66,64 @@ namespace webapi.Controllers
             return count;
         }
 
-        [HttpPost]
-        public IActionResult Create(CreateItemRequest request)
-        {
-            // mapping to internal representation
-            var item = request.ToDomain();
-
-            Console.WriteLine("item: ");
-            Console.WriteLine(item);
-
-            // invoking the use case
-            // _productsService.Create(product);
-
-            // mapping to external representation
-            return Ok(item);
-        }
-
         [HttpPost("form")]
-        public IActionResult Form([FromForm]CreateItemRequest request)
+        public IActionResult Form([FromForm]CreateProductRequest request)
         {
-            // mapping to internal representation
-            var item = request.ToDomain();
+
+            var id = request.id;
+            
+            var product = request.ToDomain();
+
+            var newPrice = Convert.ToInt32(request.price * 100);
 
             Console.WriteLine("item: ");
-            Console.WriteLine(item.Name);
-            Console.WriteLine(item.Category);
-            Console.WriteLine(item.SubCategory);
+            Console.WriteLine(product.id);
+            Console.WriteLine(request.price);
+            Console.WriteLine(newPrice);
+ 
 
             // invoking the use case
             // _productsService.Create(product);
 
             // mapping to external representation
-            return Ok(item);
+            return Ok(product);
         }
-
-
     }
 }
 
-public record CreateItemRequest(string Name, string Category, string SubCategory)
+public record CreateProductRequest(
+    int id,
+    string name,
+    string slug,
+    string category,
+    string description,
+    string smallImage,
+    float price,
+    int availability
+)
 {
-    public Item ToDomain()
+    public Product ToDomain()
     {
-        return new Item { Name = Name, Category = Category, SubCategory = SubCategory, };
+        return new Product
+        {
+            id = id,
+            name = name,
+            slug = slug,
+            category = category,
+            smallImage = smallImage,
+            mediumImage = smallImage,
+            largeImage = smallImage,
+            description = description,
+            price =  Convert.ToInt32(price * 100),
+            availability = availability
+        };
     }
 }
 
-public record ItemResponse(int Id, string Name, string Category, string SubCategory)
-{
-    public static ItemResponse FromDomain(Item item)
-    {
-        return new ItemResponse(item.Id, item.Name, item.Category, item.SubCategory);
-    }
-}
+// public record ItemResponse(int Id, string Name, string Category)
+// {
+//     public static ItemResponse FromDomain(Item item)
+//     {
+//         return new ItemResponse(item.Id, item.Name, item.Category);
+//     }
+// }
