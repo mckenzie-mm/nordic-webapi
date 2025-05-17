@@ -3,6 +3,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using webapi.Controllers;
 using webapi.DTO;
 using webapi.DTO_mappings;
 using webapi.Models;
@@ -12,9 +13,10 @@ namespace webapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class Products(ProductsService productsService) : ControllerBase
+    public class Products(ProductsService productsService, CategoriesService categoriesService) : ControllerBase
     {
         private readonly ProductsService _productsService = productsService;
+        private readonly CategoriesService _categoriesService = categoriesService;
         [HttpGet]
         public async Task<IEnumerable<Product>> Get()
         {
@@ -61,69 +63,32 @@ namespace webapi.Controllers
         [HttpGet("getCount")]
         public async Task<int> GetCount()
         {
-
             var count = await _productsService.GetCount();
             return count;
         }
 
         [HttpPost("form")]
-        public IActionResult Form([FromForm]CreateProductRequest request)
+        public IActionResult Create([FromForm] CreateProductRequest request)
         {
-
             var id = request.id;
-            
             var product = request.ToDomain();
-
-            var newPrice = Convert.ToInt32(request.price * 100);
-
-            Console.WriteLine("item: ");
-            Console.WriteLine(product.id);
-            Console.WriteLine(request.price);
-            Console.WriteLine(newPrice);
- 
-
             // invoking the use case
             // _productsService.Create(product);
 
             // mapping to external representation
             return Ok(product);
         }
-    }
-}
-
-public record CreateProductRequest(
-    int id,
-    string name,
-    string slug,
-    string category,
-    string description,
-    string smallImage,
-    float price,
-    int availability
-)
-{
-    public Product ToDomain()
-    {
-        return new Product
+        
+        [HttpGet("form/{slug}")]
+        public async Task<IActionResult> GetForm(string slug)
         {
-            id = id,
-            name = name,
-            slug = slug,
-            category = category,
-            smallImage = smallImage,
-            mediumImage = smallImage,
-            largeImage = smallImage,
-            description = description,
-            price =  Convert.ToInt32(price * 100),
-            availability = availability
-        };
+            // invoking the use case
+            var product = await _productsService.GetProduct(slug);
+            var categories = (List<Category>) await _categoriesService.Get();
+            // mapping to external representation
+            return Ok(ProductResponse.FromDomain(product, categories));
+        }
     }
 }
 
-// public record ItemResponse(int Id, string Name, string Category)
-// {
-//     public static ItemResponse FromDomain(Item item)
-//     {
-//         return new ItemResponse(item.Id, item.Name, item.Category);
-//     }
-// }
+

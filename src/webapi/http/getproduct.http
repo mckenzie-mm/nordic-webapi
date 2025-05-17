@@ -1,0 +1,8 @@
+@host = http://localhost:5037
+@slug = winter-long-geometric-sweater-chain-fringe-leaf-resin-necklace
+
+
+GET {{host}}/products/getProductPage/{{slug}}
+Accept: application/json
+
+###
