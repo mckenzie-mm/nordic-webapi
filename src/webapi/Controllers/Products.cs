@@ -1,5 +1,8 @@
+using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using webapi.DTO;
 using webapi.DTO_mappings;
 using webapi.Models;
@@ -54,12 +57,65 @@ namespace webapi.Controllers
             var ProductPageDTO = await _productsService.GetProductPage(slug);
             return ProductPageDTO;
         }
-        
+
         [HttpGet("getCount")]
         public async Task<int> GetCount()
         {
+
             var count = await _productsService.GetCount();
             return count;
         }
+
+        [HttpPost]
+        public IActionResult Create(CreateItemRequest request)
+        {
+            // mapping to internal representation
+            var item = request.ToDomain();
+
+            Console.WriteLine("item: ");
+            Console.WriteLine(item);
+
+            // invoking the use case
+            // _productsService.Create(product);
+
+            // mapping to external representation
+            return Ok(item);
+        }
+
+        [HttpPost("form")]
+        public IActionResult Form([FromForm]CreateItemRequest request)
+        {
+            // mapping to internal representation
+            var item = request.ToDomain();
+
+            Console.WriteLine("item: ");
+            Console.WriteLine(item.Name);
+            Console.WriteLine(item.Category);
+            Console.WriteLine(item.SubCategory);
+
+            // invoking the use case
+            // _productsService.Create(product);
+
+            // mapping to external representation
+            return Ok(item);
+        }
+
+
+    }
+}
+
+public record CreateItemRequest(string Name, string Category, string SubCategory)
+{
+    public Item ToDomain()
+    {
+        return new Item { Name = Name, Category = Category, SubCategory = SubCategory, };
+    }
+}
+
+public record ItemResponse(int Id, string Name, string Category, string SubCategory)
+{
+    public static ItemResponse FromDomain(Item item)
+    {
+        return new ItemResponse(item.Id, item.Name, item.Category, item.SubCategory);
     }
 }

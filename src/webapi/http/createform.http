@@ -1,0 +1,7 @@
+@host = http://localhost:5037
+POST {{host}}/products/form
+Content-Type: application/x-www-form-urlencoded
+
+Name=MacBook
+&Category=Electronics
+&SubCategory=Laptops

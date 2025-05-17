@@ -19,7 +19,7 @@ public class ProductsService
     public void Create(Product product)
     {
         // store the product in the database
-        
+
     }
 
     public async Task<Product> Get(int id)
@@ -39,7 +39,8 @@ public class ProductsService
         }
     }
 
-    public async Task<IEnumerable<Product>> Get() {
+    public async Task<IEnumerable<Product>> Get()
+    {
         var sql = "SELECT * FROM products";
         try
         {
@@ -57,7 +58,8 @@ public class ProductsService
         }
     }
 
-    public async Task<Product> GetProduct(string slug) {
+    public async Task<Product> GetProduct(string slug)
+    {
         var sql = "SELECT * FROM products WHERE slug=@slug";
         try
         {
@@ -75,7 +77,8 @@ public class ProductsService
         }
     }
 
-    public async Task<IEnumerable<Product>> findAll(int currentPage, int ITEMS_PER_PAGE) {
+    public async Task<IEnumerable<Product>> findAll(int currentPage, int ITEMS_PER_PAGE)
+    {
 
         var OFFSET = (currentPage - 1) * ITEMS_PER_PAGE;
 
@@ -85,7 +88,7 @@ public class ProductsService
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
-            var res = await connection.QueryAsync<Product>(sql, new { ITEMS_PER_PAGE, OFFSET});
+            var res = await connection.QueryAsync<Product>(sql, new { ITEMS_PER_PAGE, OFFSET });
             return res;
 
         }
@@ -107,7 +110,7 @@ public class ProductsService
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
-            var res = await connection.QueryAsync<Product>(sql, new {category, ITEMS_PER_PAGE, OFFSET});
+            var res = await connection.QueryAsync<Product>(sql, new { category, ITEMS_PER_PAGE, OFFSET });
             return res;
 
         }
@@ -127,7 +130,7 @@ public class ProductsService
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
-            var res = await connection.QueryAsync<Product>(sql, new {category, id, LIMIT=4});
+            var res = await connection.QueryAsync<Product>(sql, new { category, id, LIMIT = 4 });
             return res;
 
         }
@@ -140,13 +143,13 @@ public class ProductsService
 
     public async Task<ProductPageDTO> GetProductPage(string slug)
     {
-       Product product = await GetProduct(slug);
-       List<Product> similar = (List<Product>) await GetSimilar(product.category, product.id);
-       return new ProductPageDTO
-       {
-           productDTO = Mapping.toProductDTO(product),
-           productsDTO = Mapping.toProductsDTO(similar)
-       };
+        Product product = await GetProduct(slug);
+        List<Product> similar = (List<Product>)await GetSimilar(product.category, product.id);
+        return new ProductPageDTO
+        {
+            productDTO = Mapping.toProductDTO(product),
+            productsDTO = Mapping.toProductsDTO(similar)
+        };
     }
 
     public async Task<int> GetCount()
@@ -157,7 +160,7 @@ public class ProductsService
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
             using var command = new SqliteCommand(sql, connection);
-            int count = (int)(Int64) await command.ExecuteScalarAsync();
+            int count = (int)(Int64)await command.ExecuteScalarAsync();
             Console.WriteLine($"The number of products is {count}");
             return count;
 
@@ -168,5 +171,7 @@ public class ProductsService
             return -1;
         }
     }
+    
+    
 }
 
