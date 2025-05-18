@@ -2,9 +2,7 @@ using webapi.Domain;
 
 namespace webapi.DTO;
 
-public record class ProductsResponse (
-    List<ProductResponse> list
-)
+public record class ProductsResponse (List<ProductResponse> list)
 {
     public static ProductsResponse fromDomain(List<Product> products)
     {

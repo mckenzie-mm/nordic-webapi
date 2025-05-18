@@ -13,29 +13,29 @@ namespace webapi.Controllers
         private readonly ProductsService _productsService = productsService;
         private readonly CategoriesService _categoriesService = categoriesService;
         
-        [HttpGet("findAll/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<ProductsResponse> FindAll(int currentPage, int ITEMS_PER_PAGE)
+        [HttpGet("list/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
+        public async Task<ProductsResponse> Get(int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
 
             return ProductsResponse.fromDomain(products);
         }
 
-        [HttpGet("findByCategory/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<ProductsResponse> FindByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
+        [HttpGet("{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
+        public async Task<ProductsResponse> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
             return ProductsResponse.fromDomain(products);
         }
 
-        [HttpGet("getProductPage/{slug}")]
+        [HttpGet("page/{slug}")]
         public async Task<ProductPage> GetProductPage(string slug)
         {
             var productPage = await _productsService.GetProductPage(slug);
             return productPage;
         }
 
-        [HttpGet("getCount")]
+        [HttpGet("count")]
         public async Task<int> GetCount()
         {
             var count = await _productsService.GetCount();
