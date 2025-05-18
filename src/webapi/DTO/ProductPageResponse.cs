@@ -3,14 +3,14 @@ using webapi.Domain;
 
 namespace webapi.DTO;
 
-public record class ProductPage(
+public record class ProductPageResponse(
     ProductResponse productResponse,
     ProductsResponse productsResponse
 )
 {
-    public static ProductPage fromDomain(Product product, List<Product> products)
+    public static ProductPageResponse fromDomain(Product product, List<Product> products)
     {
-        return new ProductPage(
+        return new ProductPageResponse(
             ProductResponse.fromDomain(product),
             ProductsResponse.fromDomain(products)
         );

@@ -21,7 +21,7 @@ namespace webapi.Controllers
             return ProductsResponse.fromDomain(products);
         }
 
-        [HttpGet("by/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
+        [HttpGet("list/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
         public async Task<ProductsResponse> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
@@ -29,9 +29,11 @@ namespace webapi.Controllers
         }
 
         [HttpGet("page/{slug}")]
-        public async Task<ProductPage> GetProductPage(string slug)
+        public async Task<ProductPageResponse> GetProductPage(string slug)
         {
-            var productPage = await _productsService.GetProductPage(slug);
+            Product product = await _productsService.GetProduct(slug);
+            List<Product> similar = (List<Product>) await _productsService.GetSimilar(product.category, product.id);
+            var productPage = ProductPageResponse.fromDomain(product, similar);
             return productPage;
         }
 

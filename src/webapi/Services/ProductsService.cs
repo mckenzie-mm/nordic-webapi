@@ -1,7 +1,6 @@
 
 using Dapper;
 using Microsoft.Data.Sqlite;
-using webapi.DTO;
 using webapi.Domain;
 
 namespace webapi.Services;
@@ -137,13 +136,6 @@ public class ProductsService
             Console.WriteLine(ex.Message);
             return [];
         }
-    }
-
-    public async Task<ProductPage> GetProductPage(string slug)
-    {
-        Product product = await GetProduct(slug);
-        List<Product> similar = (List<Product>)await GetSimilar(product.category, product.id);
-        return ProductPage.fromDomain(product, similar);
     }
 
     public async Task<int> GetCount()
