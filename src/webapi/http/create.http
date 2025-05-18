@@ -1,9 +1,0 @@
-@host = http://localhost:5037
-POST {{host}}/products
-Content-Type: application/json
-
-{
-    "Name": "MacBook Pro M3 Max",
-    "Category": "Electronics",
-    "SubCategory": "Laptops"
-}

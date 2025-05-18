@@ -1,6 +1,6 @@
 using System;
 
-namespace webapi.Models;
+namespace webapi.Domain;
 
 public class Category
 {

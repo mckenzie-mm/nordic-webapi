@@ -1,12 +1,7 @@
 using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using webapi.Controllers;
+using webapi.Domain;
 using webapi.DTO;
-using webapi.DTO_mappings;
-using webapi.Models;
 using webapi.Services;
 
 namespace webapi.Controllers
@@ -17,47 +12,27 @@ namespace webapi.Controllers
     {
         private readonly ProductsService _productsService = productsService;
         private readonly CategoriesService _categoriesService = categoriesService;
-        [HttpGet]
-        public async Task<IEnumerable<Product>> Get()
-        {
-            var products = await _productsService.Get();
-            return products;
-        }
-
-        [HttpGet("{slug}")]
-        public async Task<Product> Get(string slug)
-        {
-            var product = await _productsService.GetProduct(slug);
-            return product;
-        }
-
+        
         [HttpGet("findAll/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<IEnumerable<ProductDTO>> FindAll(int currentPage, int ITEMS_PER_PAGE)
+        public async Task<ProductsResponse> FindAll(int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
 
-            return Mapping.toProductsDTO(products);
+            return ProductsResponse.fromDomain(products);
         }
 
         [HttpGet("findByCategory/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<IEnumerable<ProductDTO>> FindByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
+        public async Task<ProductsResponse> FindByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
-            return Mapping.toProductsDTO(products);
-        }
-
-        [HttpGet("getSimilar/{category}/{id:int}")]
-        public async Task<IEnumerable<Product>> GetSimilar(string category, int id)
-        {
-            var products = await _productsService.GetSimilar(category, id);
-            return products;
+            return ProductsResponse.fromDomain(products);
         }
 
         [HttpGet("getProductPage/{slug}")]
-        public async Task<ProductPageDTO> GetProductPage(string slug)
+        public async Task<ProductPage> GetProductPage(string slug)
         {
-            var ProductPageDTO = await _productsService.GetProductPage(slug);
-            return ProductPageDTO;
+            var productPage = await _productsService.GetProductPage(slug);
+            return productPage;
         }
 
         [HttpGet("getCount")]
@@ -68,10 +43,10 @@ namespace webapi.Controllers
         }
 
         [HttpPost("form")]
-        public IActionResult Create([FromForm] CreateProductRequest request)
+        public IActionResult Create([FromForm] FormRequest request)
         {
             var id = request.id;
-            var product = request.ToDomain();
+            var product = request.toDomain();
             // invoking the use case
             // _productsService.Create(product);
 
@@ -86,7 +61,7 @@ namespace webapi.Controllers
             var product = await _productsService.GetProduct(slug);
             var categories = (List<Category>) await _categoriesService.Get();
             // mapping to external representation
-            return Ok(ProductResponse.FromDomain(product, categories));
+            return Ok(FormResponse.fromDomain(product, categories));
         }
     }
 }

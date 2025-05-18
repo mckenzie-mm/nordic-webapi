@@ -1,6 +1,6 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
-using webapi.Models;
+using webapi.Domain;
 
 namespace webapi.Services;
 

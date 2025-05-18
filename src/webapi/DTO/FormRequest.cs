@@ -1,8 +1,8 @@
-using webapi.Models;
+using webapi.Domain;
 
-namespace webapi.DTO_mappings;
+namespace webapi.DTO;
 
-public record CreateProductRequest(
+public record FormRequest(
     int id,
     string name,
     string slug,
@@ -13,7 +13,7 @@ public record CreateProductRequest(
     int availability
 )
 {
-    public Product ToDomain()
+    public Product toDomain()
     {
         return new Product
         {

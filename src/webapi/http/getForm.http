@@ -2,5 +2,5 @@
 @slug = winter-long-geometric-sweater-chain-fringe-leaf-resin-necklace
 
 
-GET {{webapi_HostAddress}}/products/formData/{{slug}}
+GET {{webapi_HostAddress}}/products/form/{{slug}}
 Accept: application/json
