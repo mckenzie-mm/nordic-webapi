@@ -21,7 +21,7 @@ namespace webapi.Controllers
             return ProductsResponse.fromDomain(products);
         }
 
-        [HttpGet("{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
+        [HttpGet("by/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
         public async Task<ProductsResponse> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
