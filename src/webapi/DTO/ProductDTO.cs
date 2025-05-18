@@ -4,7 +4,7 @@ using webapi.Domain;
 namespace webapi.DTO;
 
 
-public record class ProductResponse(
+public record class ProductDTO(
     int id,
     string name,
     int price,
@@ -17,9 +17,9 @@ public record class ProductResponse(
     string category
 )
 {
-    public static ProductResponse fromDomain(Product product)
+    public static ProductDTO fromDomain(Product product)
     {
-        return new ProductResponse(
+        return new ProductDTO(
             product.id,
             product.name,
             product.price,

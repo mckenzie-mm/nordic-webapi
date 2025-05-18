@@ -14,27 +14,27 @@ namespace webapi.Controllers
         private readonly CategoriesService _categoriesService = categoriesService;
         
         [HttpGet("list/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<ProductsResponse> Get(int currentPage, int ITEMS_PER_PAGE)
+        public async Task<ProductDTOList> Get(int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
 
-            return ProductsResponse.fromDomain(products);
+            return ProductDTOList.fromDomain(products);
         }
 
         [HttpGet("list/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<ProductsResponse> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
+        public async Task<ProductDTOList> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
-            return ProductsResponse.fromDomain(products);
+            return ProductDTOList.fromDomain(products);
         }
 
         [HttpGet("page/{slug}")]
-        public async Task<ProductPageResponse> GetProductPage(string slug)
+        public async Task<Page> GetProductPage(string slug)
         {
             Product product = await _productsService.GetProduct(slug);
             List<Product> similar = (List<Product>) await _productsService.GetSimilar(product.category, product.id);
-            var productPage = ProductPageResponse.fromDomain(product, similar);
-            return productPage;
+            var page = Page.fromDomain(product, similar);
+            return page;
         }
 
         [HttpGet("count")]
@@ -53,7 +53,7 @@ namespace webapi.Controllers
             // _productsService.Create(product);
 
             // mapping to external representation
-            return Ok(product);
+            return Ok(ProductDTO.fromDomain(product));
         }
         
         [HttpGet("form/{slug}")]
