@@ -8,10 +8,9 @@ namespace webapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class Products(ProductsService productsService, CategoriesService categoriesService) : ControllerBase
+    public class Products(ProductsService productsService) : ControllerBase
     {
         private readonly ProductsService _productsService = productsService;
-        private readonly CategoriesService _categoriesService = categoriesService;
         
         [HttpGet("list/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
         public async Task<ProductDTOList> Get(int currentPage, int ITEMS_PER_PAGE)
@@ -37,12 +36,6 @@ namespace webapi.Controllers
             return page;
         }
 
-        [HttpGet("count")]
-        public async Task<int> GetCount()
-        {
-            var count = await _productsService.GetCount();
-            return count;
-        }
     }
 }
 
