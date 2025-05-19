@@ -13,18 +13,18 @@ namespace webapi.Controllers
         private readonly ProductsService _productsService = productsService;
         
         [HttpGet("list/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<ProductDTOList> Get(int currentPage, int ITEMS_PER_PAGE)
+        public async Task<List<ProductDTO>> Get(int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
 
-            return ProductDTOList.fromDomain(products);
+            return ProductDTOList.fromDomain(products).list;
         }
 
         [HttpGet("list/{category}/{currentPage:int}/{ITEMS_PER_PAGE:int}")]
-        public async Task<ProductDTOList> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
+        public async Task<List<ProductDTO>> GetByCategory(string category, int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.FindByCategory(category, currentPage, ITEMS_PER_PAGE);
-            return ProductDTOList.fromDomain(products);
+            return ProductDTOList.fromDomain(products).list;
         }
 
         [HttpGet("page/{slug}")]
