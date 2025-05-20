@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using webapi.Domain;
@@ -14,31 +15,23 @@ namespace webapi.Controllers
         private readonly CategoriesService _categoriesService = categoriesService;
 
         [HttpPost("form")]
-        public IActionResult PostProduct([FromForm] FormRequest request)
+        public async Task<IActionResult> PostProduct([FromForm] FormRequest request)
         {
             var product = request.toDomain();
 
-             Console.WriteLine("request");
-             Console.WriteLine(product);
-
-            ProductDTO pp = ProductDTO.fromDomain(product);
-
-            foreach (var item in pp.smallImage)
-            {
-                Console.WriteLine(item);
-            };
+            Console.WriteLine("request");
+            Console.WriteLine(product.id);
+            Console.WriteLine(product.name);
+            Console.WriteLine(product.description);
 
             // invoking the use case
-            // _productsService.Create(product);
+            await _productsService.Create(product);
 
-            // mapping to external representation
-            //return Ok(ProductDTO.fromDomain(product));
+            Console.WriteLine("res");
 
-            // _context.TodoItems.Add(todoItem);
-            // await _context.SaveChangesAsync();
+            var createdProduct = await _productsService.GetProduct(product.slug);
 
-            //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
-            return CreatedAtAction(nameof(GetProduct), new { id = 1000 }, ProductDTO.fromDomain(product));
+            return CreatedAtAction(nameof(GetProduct), new { id = 1000 }, ProductDTO.fromDomain(createdProduct));
         }
 
         [HttpPut("form/{id}")]

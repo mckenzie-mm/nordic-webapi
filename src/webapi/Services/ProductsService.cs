@@ -1,4 +1,5 @@
 
+using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using webapi.Domain;
@@ -13,10 +14,59 @@ public class ProductsService
         _connectionString = connection;
     }
 
-    public void Create(Product product)
+    public async Task<int> Create(Product product)
     {
-        // store the product in the database
+        var sql = @"INSERT INTO products (
+            category, 
+            name, 
+            price,
+            description,
+            smallImage,
+            mediumImage,
+            largeImage,
+            slug,
+            availability
+            ) 
+            VALUES (
+            @category, 
+            @name, 
+            @price, 
+            @description, 
+            @smallImage,
+            @mediumImage,
+            @largeImage,
+            @slug,
+            @availability
+            )";
+        try
+        {
+            // Open a new database connection
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
 
+
+            // Bind parameters values
+            using var command = new SqliteCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@category", product.category);
+            command.Parameters.AddWithValue("@name", product.name);
+            command.Parameters.AddWithValue("@price", product.price);
+            command.Parameters.AddWithValue("@description", product.description);
+            command.Parameters.AddWithValue("@smallImage", product.smallImage);
+            command.Parameters.AddWithValue("@mediumImage", product.mediumImage);
+            command.Parameters.AddWithValue("@largeImage", product.largeImage);
+            command.Parameters.AddWithValue("@slug", product.slug);
+            command.Parameters.AddWithValue("@availability", product.availability);
+
+            // Execute the INSERT statement
+            var rowInserted = await command.ExecuteNonQueryAsync();
+            return rowInserted;
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return -1;
+        }
     }
 
     public async Task<int> UpdateAsync(int id, Product product)
