@@ -17,6 +17,17 @@ namespace webapi.Controllers
         public IActionResult PostProduct([FromForm] FormRequest request)
         {
             var product = request.toDomain();
+
+             Console.WriteLine("request");
+             Console.WriteLine(product);
+
+            ProductDTO pp = ProductDTO.fromDomain(product);
+
+            foreach (var item in pp.smallImage)
+            {
+                Console.WriteLine(item);
+            };
+
             // invoking the use case
             // _productsService.Create(product);
 
@@ -31,31 +42,26 @@ namespace webapi.Controllers
         }
 
         [HttpPut("form/{id}")]
-        public async Task<IActionResult> PutProduct(long id, [FromForm] FormRequest request)
+        public async Task<IActionResult> PutProduct(int id, [FromForm] FormRequest request)
         {
-            // if (id != request.Id)
-            // {
-            //     return BadRequest();
-            // }
 
-            // _context.Entry(todoItem).State = EntityState.Modified;
+            var product = request.toDomain();
+            Console.WriteLine("request");
 
-            // try
-            // {
-            //     await _context.SaveChangesAsync();
-            // }
-            // catch (DbUpdateConcurrencyException)
-            // {
-            //     if (!TodoItemExists(id))
-            //     {
-            //         return NotFound();
-            //     }
-            //     else
-            //     {
-            //         throw;
-            //     }
-            // }
+            // Console.WriteLine(ProductDTO.fromDomain(product));
 
+            Console.WriteLine(product.name);
+            Console.WriteLine(product.price);
+            Console.WriteLine(product.smallImage);
+            Console.WriteLine(product.mediumImage);
+            Console.WriteLine(product.largeImage);
+            Console.WriteLine(product.slug);
+            Console.WriteLine(product.description) ;
+            Console.WriteLine(product.availability) ;
+            Console.WriteLine(product.category) ;
+
+            var res = await _productsService.UpdateAsync(id, product);
+          
             return NoContent();
         }
 
@@ -95,6 +101,7 @@ namespace webapi.Controllers
             // invoking the use case
             var product = await _productsService.GetProduct(slug);
             var categories = (List<Category>)await _categoriesService.Get();
+
             // mapping to external representation
             return Ok(FormResponse.fromDomain(product, categories));
         }

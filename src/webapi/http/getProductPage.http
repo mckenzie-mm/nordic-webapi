@@ -2,7 +2,7 @@
 @slug = winter-long-geometric-sweater-chain-fringe-leaf-resin-necklace
 
 
-GET {{host}}/products/getProductPage/{{slug}}
+GET {{host}}/products/page/{{slug}}
 Accept: application/json
 
 ###

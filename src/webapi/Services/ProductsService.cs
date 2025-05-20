@@ -19,6 +19,42 @@ public class ProductsService
 
     }
 
+    public async Task<int> UpdateAsync(int id, Product product)
+    {
+        var sql = @"UPDATE products SET 
+            name=@name, 
+            price=@price,
+            description=@description,
+            smallImage=@smallImage,
+            mediumImage=@mediumImage,
+            largeImage=@largeImage,
+            slug=@slug,
+            availability=@availability
+            WHERE id=@id";
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var res = await connection.ExecuteAsync(sql, new 
+            {
+                product.name,
+                product.price,
+                product.description,
+                product.smallImage,
+                product.mediumImage,
+                product.largeImage,
+                product.slug,
+                product.availability,
+                id
+            });
+            return res;
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return -1;
+        }
+    }
     public async Task<Product> Get(int id)
     {
         var sql = "SELECT * FROM products WHERE id=@id";
@@ -64,6 +100,7 @@ public class ProductsService
             connection.Open();
 
             var res = await connection.QuerySingleAsync<Product>(sql, new { slug });
+
             return res;
 
         }
