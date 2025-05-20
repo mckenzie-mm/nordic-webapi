@@ -14,16 +14,80 @@ namespace webapi.Controllers
         private readonly CategoriesService _categoriesService = categoriesService;
 
         [HttpPost("form")]
-        public IActionResult Create([FromForm] FormRequest request)
+        public IActionResult PostProduct([FromForm] FormRequest request)
         {
-            var id = request.id;
             var product = request.toDomain();
             // invoking the use case
             // _productsService.Create(product);
 
             // mapping to external representation
-            return Ok(ProductDTO.fromDomain(product));
+            //return Ok(ProductDTO.fromDomain(product));
+
+            // _context.TodoItems.Add(todoItem);
+            // await _context.SaveChangesAsync();
+
+            //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            return CreatedAtAction(nameof(GetProduct), new { id = 1000 }, ProductDTO.fromDomain(product));
         }
+
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> PutProduct(long id, [FromForm] FormRequest request)
+        {
+            // if (id != request.Id)
+            // {
+            //     return BadRequest();
+            // }
+
+            // _context.Entry(todoItem).State = EntityState.Modified;
+
+            // try
+            // {
+            //     await _context.SaveChangesAsync();
+            // }
+            // catch (DbUpdateConcurrencyException)
+            // {
+            //     if (!TodoItemExists(id))
+            //     {
+            //         return NotFound();
+            //     }
+            //     else
+            //     {
+            //         throw;
+            //     }
+            // }
+
+            return NoContent();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProduct(long id)
+        {
+            // var todoItem = await _context.TodoItems.FindAsync(id);
+
+            // if (todoItem == null)
+            // {
+            //     return NotFound();
+            // }
+
+            // return todoItem;
+            return null;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(long id)
+        {
+            // var todoItem = await _context.TodoItems.FindAsync(id);
+            // if (todoItem == null)
+            // {
+            //     return NotFound();
+            // }
+
+            // _context.TodoItems.Remove(todoItem);
+            // await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
 
         [HttpGet("form/{slug}")]
         public async Task<IActionResult> GetForm(string slug)

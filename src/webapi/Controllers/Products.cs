@@ -16,7 +16,6 @@ namespace webapi.Controllers
         public async Task<List<ProductDTO>> Get(int currentPage, int ITEMS_PER_PAGE)
         {
             var products = (List<Product>)await _productsService.findAll(currentPage, ITEMS_PER_PAGE);
-
             return products.ConvertAll(ProductDTO.fromDomain);
         }
 
