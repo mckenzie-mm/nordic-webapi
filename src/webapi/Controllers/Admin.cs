@@ -49,12 +49,12 @@ namespace webapi.Controllers
             Console.WriteLine(product.mediumImage);
             Console.WriteLine(product.largeImage);
             Console.WriteLine(product.slug);
-            Console.WriteLine(product.description) ;
-            Console.WriteLine(product.availability) ;
-            Console.WriteLine(product.category) ;
+            Console.WriteLine(product.description);
+            Console.WriteLine(product.availability);
+            Console.WriteLine(product.category);
 
             var res = await _productsService.UpdateAsync(id, product);
-          
+
             return NoContent();
         }
 
@@ -73,16 +73,17 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(long id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             // var todoItem = await _context.TodoItems.FindAsync(id);
             // if (todoItem == null)
             // {
             //     return NotFound();
             // }
-
             // _context.TodoItems.Remove(todoItem);
             // await _context.SaveChangesAsync();
+
+            var res = await _productsService.DeleteProduct(id);
 
             return NoContent();
         }
@@ -98,7 +99,7 @@ namespace webapi.Controllers
             // mapping to external representation
             return Ok(FormResponse.fromDomain(product, categories));
         }
-        
+
         [HttpGet("count")]
         public async Task<int> GetCount()
         {

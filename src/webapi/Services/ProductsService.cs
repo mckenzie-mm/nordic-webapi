@@ -85,7 +85,7 @@ public class ProductsService
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
-            var res = await connection.ExecuteAsync(sql, new 
+            var res = await connection.ExecuteAsync(sql, new
             {
                 product.name,
                 product.price,
@@ -216,7 +216,6 @@ public class ProductsService
 
             var res = await connection.QueryAsync<Product>(sql, new { category, id, LIMIT = 4 });
             return res;
-
         }
         catch (SqliteException ex)
         {
@@ -234,9 +233,7 @@ public class ProductsService
             connection.Open();
             using var command = new SqliteCommand(sql, connection);
             int count = (int)(Int64)await command.ExecuteScalarAsync();
-            Console.WriteLine($"The number of products is {count}");
             return count;
-
         }
         catch (SqliteException ex)
         {
@@ -244,7 +241,29 @@ public class ProductsService
             return -1;
         }
     }
-    
+
+    public async Task<int> DeleteProduct(int id)
+    {
+        var sql = "DELETE FROM products WHERE id = @id";
+        try
+        {
+            // Open a new database connection
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            // Bind parameters values
+            using var command = new SqliteCommand(sql, connection);
+            command.Parameters.AddWithValue("@id", id);
+
+            // Execute the DELETE statement
+            var rowDeleted = await command.ExecuteNonQueryAsync();
+            return rowDeleted;
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return -1;
+        }
+    }
     
 }
 
