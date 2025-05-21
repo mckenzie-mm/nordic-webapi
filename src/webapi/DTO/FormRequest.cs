@@ -8,7 +8,7 @@ public record FormRequest(
     string slug,
     string category,
     string description,
-    string[] smallImage,
+    string[] images,
     float price,
     int availability
 )
@@ -21,9 +21,7 @@ public record FormRequest(
             name = name,
             slug = slug,
             category = category,
-            smallImage = String.Join(",", smallImage),
-            mediumImage = String.Join(",", smallImage),
-            largeImage = String.Join(",", smallImage),
+            images = String.Join(",", images),
             description = description,
             price = Convert.ToInt32(price * 100),
             availability = availability

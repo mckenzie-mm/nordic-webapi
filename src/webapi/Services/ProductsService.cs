@@ -21,9 +21,7 @@ public class ProductsService
             name, 
             price,
             description,
-            smallImage,
-            mediumImage,
-            largeImage,
+            images,
             slug,
             availability
             ) 
@@ -32,9 +30,7 @@ public class ProductsService
             @name, 
             @price, 
             @description, 
-            @smallImage,
-            @mediumImage,
-            @largeImage,
+            @images,
             @slug,
             @availability
             )";
@@ -52,9 +48,7 @@ public class ProductsService
             command.Parameters.AddWithValue("@name", product.name);
             command.Parameters.AddWithValue("@price", product.price);
             command.Parameters.AddWithValue("@description", product.description);
-            command.Parameters.AddWithValue("@smallImage", product.smallImage);
-            command.Parameters.AddWithValue("@mediumImage", product.mediumImage);
-            command.Parameters.AddWithValue("@largeImage", product.largeImage);
+            command.Parameters.AddWithValue("@images", product.images);
             command.Parameters.AddWithValue("@slug", product.slug);
             command.Parameters.AddWithValue("@availability", product.availability);
 
@@ -75,9 +69,7 @@ public class ProductsService
             name=@name, 
             price=@price,
             description=@description,
-            smallImage=@smallImage,
-            mediumImage=@mediumImage,
-            largeImage=@largeImage,
+            largeImage=@images,
             slug=@slug,
             availability=@availability
             WHERE id=@id";
@@ -90,9 +82,7 @@ public class ProductsService
                 product.name,
                 product.price,
                 product.description,
-                product.smallImage,
-                product.mediumImage,
-                product.largeImage,
+                product.images,
                 product.slug,
                 product.availability,
                 id

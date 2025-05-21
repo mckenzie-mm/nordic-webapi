@@ -45,9 +45,7 @@ namespace webapi.Controllers
 
             Console.WriteLine(product.name);
             Console.WriteLine(product.price);
-            Console.WriteLine(product.smallImage);
-            Console.WriteLine(product.mediumImage);
-            Console.WriteLine(product.largeImage);
+            Console.WriteLine(product.images);
             Console.WriteLine(product.slug);
             Console.WriteLine(product.description);
             Console.WriteLine(product.availability);
