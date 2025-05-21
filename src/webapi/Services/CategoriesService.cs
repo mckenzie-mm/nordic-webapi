@@ -13,18 +13,6 @@ public class CategoriesService
         _connectionString = connection;
     }
 
-    public void Create(Category category)
-    {
-        // store the product in the database
-        
-    }
-
-    public Category? Get(int categoryId)
-    {
-        // pull the product from the database
-        return null;;
-    }
-
     public async Task<IEnumerable<Category>> Get() {
         var sql = "SELECT * FROM categories";
         try

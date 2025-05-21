@@ -151,6 +151,27 @@ public class ProductsService
         }
     }
 
+     public async Task<Product> GetProductById(int id)
+    {
+        var sql = "SELECT * FROM products WHERE id=@id";
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            var res = await connection.QuerySingleAsync<Product>(sql, new { id });
+
+            return res;
+
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+
     public async Task<IEnumerable<Product>> findAll(int currentPage, int ITEMS_PER_PAGE)
     {
 

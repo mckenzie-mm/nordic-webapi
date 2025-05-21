@@ -19,19 +19,12 @@ namespace webapi.Controllers
         {
             var product = request.toDomain();
 
-            Console.WriteLine("request");
-            Console.WriteLine(product.id);
-            Console.WriteLine(product.name);
-            Console.WriteLine(product.description);
-
             // invoking the use case
             await _productsService.Create(product);
 
-            Console.WriteLine("res");
+            var createdProduct = await _productsService.GetProductById(product.id);
 
-            var createdProduct = await _productsService.GetProduct(product.slug);
-
-            return CreatedAtAction(nameof(GetProduct), new { id = 1000 }, ProductDTO.fromDomain(createdProduct));
+            return CreatedAtAction(nameof(GetProduct), new { product.slug }, ProductDTO.fromDomain(createdProduct));
         }
 
         [HttpPut("form/{id}")]
@@ -39,49 +32,33 @@ namespace webapi.Controllers
         {
 
             var product = request.toDomain();
-            Console.WriteLine("request");
-
-            // Console.WriteLine(ProductDTO.fromDomain(product));
-
-            Console.WriteLine(product.name);
-            Console.WriteLine(product.price);
-            Console.WriteLine(product.images);
-            Console.WriteLine(product.slug);
-            Console.WriteLine(product.description);
-            Console.WriteLine(product.availability);
-            Console.WriteLine(product.category);
-
-            var res = await _productsService.UpdateAsync(id, product);
+         
+            await _productsService.UpdateAsync(id, product);
 
             return NoContent();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(long id)
+        [HttpGet("{slug}")]
+        public async Task<ActionResult<ProductDTO>> GetProduct(string slug)
         {
-            // var todoItem = await _context.TodoItems.FindAsync(id);
-
-            // if (todoItem == null)
-            // {
-            //     return NotFound();
-            // }
-
-            // return todoItem;
-            return null;
+            var product = await _productsService.GetProduct(slug);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return ProductDTO.fromDomain(product);
         }
 
-        [HttpDelete("{id}")]
+       
+        [HttpDelete("{id: int}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            // var todoItem = await _context.TodoItems.FindAsync(id);
-            // if (todoItem == null)
-            // {
-            //     return NotFound();
-            // }
-            // _context.TodoItems.Remove(todoItem);
-            // await _context.SaveChangesAsync();
-
-            var res = await _productsService.DeleteProduct(id);
+            var product = await _productsService.GetProductById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            await _productsService.DeleteProduct(product.id);
 
             return NoContent();
         }
