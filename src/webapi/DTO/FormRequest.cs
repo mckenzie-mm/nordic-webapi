@@ -5,12 +5,11 @@ namespace webapi.DTO;
 public record FormRequest(
     int id,
     string name,
-    string slug,
     string category,
-    string description,
-    string[] images,
+    string? description,
+    string[]? images,
     float price,
-    int availability
+    int? availability
 )
 {
     public Product toDomain()
@@ -19,12 +18,13 @@ public record FormRequest(
         {
             id = id,
             name = name,
-            slug = slug,
+            slug = name.Replace(" ", "-").ToLower(),
             category = category,
-            images = String.Join(",", images),
-            description = description,
+            images = (images != null && images.Length != 0) ? string.Join(",", images!) : string.Empty ,
+            description = string.IsNullOrEmpty(description) ? string.Empty : description,
             price = Convert.ToInt32(price * 100),
-            availability = availability
+            availability = (int)((availability == null) ? 0 : availability)
+            
         };
     }
 }

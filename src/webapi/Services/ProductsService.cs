@@ -95,7 +95,7 @@ public class ProductsService
             return -1;
         }
     }
-    public async Task<Product> Get(int id)
+    public async Task<Product?> Get(int id)
     {
         var sql = "SELECT * FROM products WHERE id=@id";
         try
@@ -131,18 +131,16 @@ public class ProductsService
         }
     }
 
-    public async Task<Product> GetProductBySlug(string slug)
+    public async Task<Product?> GetProductByName(string name)
     {
-        var sql = "SELECT * FROM products WHERE slug=@slug";
+        Console.WriteLine($"Product name: {name}");
+        var sql = "SELECT * FROM products WHERE name=@name";
         try
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
-
-            var res = await connection.QuerySingleAsync<Product>(sql, new { slug });
-
+            var res = await connection.QueryFirstOrDefaultAsync<Product>(sql, new { name });
             return res;
-
         }
         catch (SqliteException ex)
         {
@@ -151,7 +149,25 @@ public class ProductsService
         }
     }
 
-     public async Task<Product> GetProduct(int id)
+
+    public async Task<Product?> GetProductBySlug(string slug)
+    {
+        var sql = "SELECT * FROM products WHERE slug=@slug";
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var res = await connection.QueryFirstOrDefaultAsync<Product>(sql, new { slug });
+            return res;
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+     public async Task<Product?> GetProduct(int id)
     {
         var sql = "SELECT * FROM products WHERE id=@id";
         try
@@ -243,7 +259,7 @@ public class ProductsService
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
             using var command = new SqliteCommand(sql, connection);
-            int count = (int)(Int64)await command.ExecuteScalarAsync();
+            int count = (int)(long)await command.ExecuteScalarAsync();
             return count;
         }
         catch (SqliteException ex)

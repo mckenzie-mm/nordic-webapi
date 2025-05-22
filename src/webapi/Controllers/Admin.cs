@@ -17,25 +17,49 @@ namespace webapi.Controllers
         [HttpPost("form")]
         public async Task<IActionResult> PostProduct([FromForm] FormRequest request)
         {
-            var product = request.toDomain();
-
-            // invoking the use case
-            await _productsService.Create(product);
-
-            var createdProduct = await _productsService.GetProduct(product.id);
-
-            return CreatedAtAction(nameof(GetProductBySlug), new { product.slug }, ProductDTO.fromDomain(createdProduct));
+            try
+            {
+                var product = request.toDomain();
+                var res = await _productsService.GetProductByName(product.name);     
+                if (res != null)
+                {
+                    return BadRequest(new
+                    {
+                        title = "One or more validation errors occurred.",
+                        status = 400,
+                        errors = new
+                        {
+                            name = new string [1]{ "a product with that name already exists"},
+                        }
+                    });
+                }
+                // invoking the use case
+                await _productsService.Create(product);
+                var createdProduct = await _productsService.GetProduct(product.id);
+                return CreatedAtAction(nameof(GetProductBySlug), new { product.slug }, ProductDTO.fromDomain(createdProduct!));
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+            // 
         }
 
         [HttpPut("form/{id:int}")]
         public async Task<IActionResult> PutProduct(int id, [FromForm] FormRequest request)
         {
-
-            var product = request.toDomain();
-         
-            await _productsService.UpdateAsync(id, product);
-
-            return NoContent();
+            try
+            {
+                 var product = request.toDomain();
+                await _productsService.UpdateAsync(id, product);
+                return NoContent();
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }    
         }
 
         [HttpGet("{slug}")]
@@ -59,7 +83,6 @@ namespace webapi.Controllers
                 return NotFound();
             }
             await _productsService.DeleteProduct(product.id);
-
             return NoContent();
         }
 
@@ -70,9 +93,8 @@ namespace webapi.Controllers
             // invoking the use case
             var product = await _productsService.GetProductBySlug(slug);
             var categories = (List<Category>)await _categoriesService.Get();
-
             // mapping to external representation
-            return Ok(FormResponse.fromDomain(product, categories));
+            return Ok(FormResponse.fromDomain(product!, categories));
         }
 
         [HttpGet("count")]
