@@ -7,7 +7,7 @@ namespace webapi.DTO;
 public record class ProductDTO(
     int id,
     string name,
-    int price,
+    double price,
     string[] images,
     string slug,
     string description,
@@ -20,7 +20,7 @@ public record class ProductDTO(
         return new ProductDTO(
             product.id,
             product.name,
-            product.price,
+            product.price / 100.0,
             product.images.Split(','),
             product.slug,
             product.description,
