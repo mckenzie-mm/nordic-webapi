@@ -131,7 +131,7 @@ public class ProductsService
         }
     }
 
-    public async Task<Product> GetProduct(string slug)
+    public async Task<Product> GetProductBySlug(string slug)
     {
         var sql = "SELECT * FROM products WHERE slug=@slug";
         try
@@ -151,7 +151,7 @@ public class ProductsService
         }
     }
 
-     public async Task<Product> GetProductById(int id)
+     public async Task<Product> GetProduct(int id)
     {
         var sql = "SELECT * FROM products WHERE id=@id";
         try

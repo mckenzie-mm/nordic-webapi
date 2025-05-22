@@ -29,7 +29,7 @@ namespace webapi.Controllers
         [HttpGet("page/{slug}")]
         public async Task<Page> GetProductPage(string slug)
         {
-            Product product = await _productsService.GetProduct(slug);
+            Product product = await _productsService.GetProductBySlug(slug);
             List<Product> similar = (List<Product>) await _productsService.GetSimilar(product.category, product.id);
             var page = Page.fromDomain(product, similar);
             return page;

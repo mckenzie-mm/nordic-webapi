@@ -22,12 +22,12 @@ namespace webapi.Controllers
             // invoking the use case
             await _productsService.Create(product);
 
-            var createdProduct = await _productsService.GetProductById(product.id);
+            var createdProduct = await _productsService.GetProduct(product.id);
 
-            return CreatedAtAction(nameof(GetProduct), new { product.slug }, ProductDTO.fromDomain(createdProduct));
+            return CreatedAtAction(nameof(GetProductBySlug), new { product.slug }, ProductDTO.fromDomain(createdProduct));
         }
 
-        [HttpPut("form/{id}")]
+        [HttpPut("form/{id:int}")]
         public async Task<IActionResult> PutProduct(int id, [FromForm] FormRequest request)
         {
 
@@ -39,9 +39,9 @@ namespace webapi.Controllers
         }
 
         [HttpGet("{slug}")]
-        public async Task<ActionResult<ProductDTO>> GetProduct(string slug)
+        public async Task<ActionResult<ProductDTO>> GetProductBySlug(string slug)
         {
-            var product = await _productsService.GetProduct(slug);
+            var product = await _productsService.GetProductBySlug(slug);
             if (product == null)
             {
                 return NotFound();
@@ -50,10 +50,10 @@ namespace webapi.Controllers
         }
 
        
-        [HttpDelete("{id: int}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _productsService.GetProductById(id);
+            var product = await _productsService.GetProduct(id);
             if (product == null)
             {
                 return NotFound();
@@ -68,7 +68,7 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetForm(string slug)
         {
             // invoking the use case
-            var product = await _productsService.GetProduct(slug);
+            var product = await _productsService.GetProductBySlug(slug);
             var categories = (List<Category>)await _categoriesService.Get();
 
             // mapping to external representation
